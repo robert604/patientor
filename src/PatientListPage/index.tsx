@@ -8,6 +8,8 @@ import { Patient } from "../types";
 import { apiBaseUrl } from "../constants";
 import HealthRatingBar from "../components/HealthRatingBar";
 import { useStateValue } from "../state";
+import { Link } from "react-router-dom";
+
 
 const PatientListPage = () => {
   const [{ patients }, dispatch] = useStateValue();
@@ -30,9 +32,10 @@ const PatientListPage = () => {
       );
       dispatch({ type: "ADD_PATIENT", payload: newPatient });
       closeModal();
-    } catch (e) {
+    } catch (e:any) {
       console.error(e.response?.data || 'Unknown Error');
       setError(e.response?.data?.error || 'Unknown error');
+      
     }
   };
 
@@ -41,28 +44,31 @@ const PatientListPage = () => {
       <Container textAlign="center">
         <h3>Patient list</h3>
       </Container>
-      <Table celled>
-        <Table.Header>
-          <Table.Row>
-            <Table.HeaderCell>Name</Table.HeaderCell>
-            <Table.HeaderCell>Gender</Table.HeaderCell>
-            <Table.HeaderCell>Occupation</Table.HeaderCell>
-            <Table.HeaderCell>Health Rating</Table.HeaderCell>
-          </Table.Row>
-        </Table.Header>
-        <Table.Body>
-          {Object.values(patients).map((patient: Patient) => (
-            <Table.Row key={patient.id}>
-              <Table.Cell>{patient.name}</Table.Cell>
-              <Table.Cell>{patient.gender}</Table.Cell>
-              <Table.Cell>{patient.occupation}</Table.Cell>
-              <Table.Cell>
-                <HealthRatingBar showText={false} rating={1} />
-              </Table.Cell>
+
+        <Table celled>
+          <Table.Header>
+            <Table.Row>
+              <Table.HeaderCell>Name</Table.HeaderCell>
+              <Table.HeaderCell>Gender</Table.HeaderCell>
+              <Table.HeaderCell>Occupation</Table.HeaderCell>
+              <Table.HeaderCell>Health Rating</Table.HeaderCell>
             </Table.Row>
-          ))}
-        </Table.Body>
-      </Table>
+          </Table.Header>
+          <Table.Body>
+            {Object.values(patients).map((patient: Patient) => (
+              <Table.Row key={patient.id}>
+                <Table.Cell><Link to={`/api/patients/${patient.id}`}>{patient.name}</Link></Table.Cell>
+                <Table.Cell>{patient.gender}</Table.Cell>
+                <Table.Cell>{patient.occupation}</Table.Cell>
+                <Table.Cell>
+                  <HealthRatingBar showText={false} rating={1} />
+                </Table.Cell>
+              </Table.Row>
+            ))}
+          </Table.Body>
+        </Table>
+
+
       <AddPatientModal
         modalOpen={modalOpen}
         onSubmit={submitNewPatient}
