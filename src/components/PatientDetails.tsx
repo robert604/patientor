@@ -6,6 +6,7 @@ import { apiBaseUrl } from "../constants";
 import { useStateValue,addPatientFull } from "../state";
 import { Gender, PatientFull } from "../types";
 import { SemanticICONS } from "semantic-ui-react/dist/commonjs/generic";
+import EntryComp from './EntryComp';
 
 const PatientDetails = () => {
   const params = useParams();
@@ -36,7 +37,11 @@ const PatientDetails = () => {
       <div>     
         <h2>{patientFull.name} <Icon name={iconText}></Icon></h2>
         <div>ssn: {patientFull.ssn}</div>
-        <div>occupation: {patientFull.occupation}</div>      
+        <div>occupation: {patientFull.occupation}</div>
+        <h3>entries</h3>
+        {patientFull.entries.map((e,i) => {
+          return <EntryComp key={i} entry={e}/>;
+        })}
       </div>
     );
   }
