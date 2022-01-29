@@ -26,7 +26,6 @@ const App = () => {
           `${apiBaseUrl}/diagnoses`
         );
         dispatch(setDiagnosisList(diagnosisListFromApi));
-        console.log(diagnosisListFromApi);
       } catch (e) {
         console.error(e);
       }

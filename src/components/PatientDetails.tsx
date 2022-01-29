@@ -1,6 +1,6 @@
 import axios from "axios";
 import React from "react";
-import { Icon } from 'semantic-ui-react';
+import { Icon,Container } from 'semantic-ui-react';
 import { useParams } from "react-router-dom";
 import { apiBaseUrl } from "../constants";
 import { useStateValue,addPatientFull } from "../state";
@@ -40,7 +40,19 @@ const PatientDetails = () => {
         <div>occupation: {patientFull.occupation}</div>
         <h3>entries</h3>
         {patientFull.entries.map((e,i) => {
-          return <EntryComp key={i} entry={e}/>;
+          const style = {
+            border:'solid',
+            borderWidth:2,
+            borderColor:'#aaaaaa',
+            borderRadius:5,
+            margin:5,
+            padding:5
+          };
+          return(
+            <Container key={i} style={style}>
+              <EntryComp entry={e}/>
+            </Container>
+          );
         })}
       </div>
     );
