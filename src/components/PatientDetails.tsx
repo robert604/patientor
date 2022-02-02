@@ -27,8 +27,7 @@ const PatientDetails = () => {
     try {
       if(values && values.healthCheckRating) {
         values.healthCheckRating = Number(values.healthCheckRating);
-      }
-      console.log('clicked submit',values);    
+      }  
 
       if(!id) throw new Error('No patient ID specified');
       const {data:savedEntry} = await axios.post<Entry>(
@@ -46,9 +45,7 @@ const PatientDetails = () => {
 
   if(id && !patient) {
     void (async () => {
-      //console.log('url',`${apiBaseUrl}/patients/${id}`);
       const {data}:{data:PatientFull} = await axios.get(`${apiBaseUrl}/patients/${id}`);
-      //console.log('data',data);
       dispatch(addPatient(data));
     })();
   }

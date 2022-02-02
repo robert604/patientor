@@ -4,6 +4,7 @@ import {Formik,Form,Field} from 'formik';
 import {TextField,SelectField,DiagnosisSelection,OptionForSelect,OptionForSelectNum} from '../AddPatientModal/FormField';
 import { HealthCheckRating,EntryType, EntryWithoutId } from '../types';
 import { useStateValue } from '../state';
+import { isString,isDate } from '../utils';
 
 const healthCheckRatingOptions: OptionForSelectNum[] = [
   { value:HealthCheckRating.Healthy, label:'Healthy'},
@@ -36,6 +37,8 @@ const AddEntryModal = (props:Props) => {
     }
     if (!values.date) {
       errors.date = requiredError;
+    } else if(!isString(values.date) || !isDate(values.date)) {
+      errors.date = 'Invalid date format';
     }
     if (!values.specialist) {
       errors.specialist = requiredError;
