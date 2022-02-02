@@ -1,9 +1,10 @@
 import React from 'react';
 import { useStateValue } from '../state';
-import {Entry,HealthCheckEntry,OccupationalHealthcareEntry,HospitalEntry, HealthCheckRating} from '../types';
+import {Entry,HealthCheckEntry,OccupationalHealthcareEntry,HospitalEntry, HealthCheckRating,EntryType} from '../types';
 import {Icon} from 'semantic-ui-react';
 
-const assertNever = (x: never):never => {
+
+export const assertNever = (x: never):never => {
   throw new Error("Unexpected type: " + typeof x);
 };
 
@@ -79,12 +80,13 @@ const HospitalEntryComp = ({entry}:{entry:HospitalEntry}) => {
 };
 
 const EntryComp = ({entry}:{entry:Entry}) => {
+  //console.log('entrycomp',entry);
   switch(entry.type) {
-    case "HealthCheck":
+    case EntryType.HealthCheck:
       return <HealthCheckEntryComp entry={entry}/>;
-    case "Hospital":
+    case EntryType.Hospital:
       return <HospitalEntryComp entry={entry}/>;
-    case "OccupationalHealthcare":
+    case EntryType.OccupationalHealthcare:
       return <OccupationalHealthcareEntryComp entry={entry}/>;
     default:
       return assertNever(entry);

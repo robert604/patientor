@@ -25,6 +25,7 @@ const PatientListPage = () => {
   };
 
   const submitNewPatient = async (values: PatientFormValues) => {
+    console.log('newpatient',values);
     try {
       const { data: newPatient } = await axios.post<Patient>(
         `${apiBaseUrl}/patients`,
