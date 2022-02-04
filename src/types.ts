@@ -76,3 +76,9 @@ export type Entry =
   | HealthCheckEntry;
 
 export type EntryWithoutId = Omit<Entry,'id'>;
+
+export const baseEntryKeys = ['id','description','date','specialist','diagnosisCodes'];
+export const healthCheckEntryKeys = baseEntryKeys.concat(['type','healthCheckRating']);
+export const occupationalHealthcareEntryKeys = baseEntryKeys.concat(['type','employerName','sickLeave']);
+export const hospitalEntry = baseEntryKeys.concat(['type','discharge']);
+

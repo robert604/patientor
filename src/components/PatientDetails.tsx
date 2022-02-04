@@ -8,6 +8,7 @@ import { Gender, PatientFull,Entry } from "../types";
 import { SemanticICONS } from "semantic-ui-react/dist/commonjs/generic";
 import EntryComp from './EntryComp';
 import AddEntryModal from './AddEntryModal';
+import {keepEntryKeys} from '../utils';
 
 
 const PatientDetails = () => {
@@ -18,26 +19,35 @@ const PatientDetails = () => {
   const [{patients},dispatch] = useStateValue();
   if(!id) throw new Error('No patient id');
   const patient = patients[id] as PatientFull;
-
   const closeEntryModal = () => {
     setShowEntryModal(false);
     setError(undefined);    
   };
-  const submitEntryClick = async (values:any) => {
+  const submitEntryClick = async (values:{[key:string]:unknown}) => {
     try {
-      if(values && values.healthCheckRating) {
-        values.healthCheckRating = Number(values.healthCheckRating);
-      }  
-
+      let vals = Object.assign({},values);
+      if(vals.healthCheckRating) {
+        vals.healthCheckRating = Number(vals.healthCheckRating);
+      }
+      if(vals.sickLeaveStartDate && vals.sickLeaveEndDate) {
+        vals.sickLeave = {
+          startDate: vals.sickLeaveStartDate,
+          endDate: vals.sickLeaveEndDate
+        };
+        delete vals.sickLeaveStartDate;
+        delete vals.sickLeaveEndDate;
+      }
+      vals = keepEntryKeys(vals);
       if(!id) throw new Error('No patient ID specified');
       const {data:savedEntry} = await axios.post<Entry>(
-        `${apiBaseUrl}/patients/${id}/entries`,values
+        `${apiBaseUrl}/patients/${id}/entries`,vals
       );
       dispatch(addEntry(id,savedEntry));
       closeEntryModal();
     } catch(error:any) {
-      console.error(error.response?.data || 'Unknown error when adding new entry');
-      setError(error.response?.data || 'Unknown error when adding new entry');
+      const message = String(error.response?.data || error.message || 'Unknown error when adding new entry');
+      console.error(message);
+      setError(message);
     }
   };
 
