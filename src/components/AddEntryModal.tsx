@@ -27,7 +27,7 @@ const healthCheckRatingOptions: OptionForSelectNum[] = [
 const typeOptions: OptionForSelect[] = [
   { value:EntryType.HealthCheck, label:"HealthCheck"},
   { value:"OccupationalHealthcare", label:"OccupationalHealthcare"},
-  //{ value:"Hospital", label:"Hospital"},
+  { value:"Hospital", label:"Hospital"},
 ];
 
 interface Props {
@@ -56,30 +56,40 @@ const AddEntryModal = (props:Props) => {
     if(values.type===EntryType.OccupationalHealthcare) {
       if(!values.employerName) {
         errors.employerName = requiredError;
+      }   
+      const startVal:unknown = values.sickLeaveStartDate;
+      const endVal:unknown = values.sickLeaveEndDate;
+      const startDate = typeof startVal==='string' ? Date.parse(startVal) : null;
+      const endDate = typeof endVal==='string' ? Date.parse(endVal) : null;
+      if(startVal) {
+        if(!startDate) {
+          errors.sickLeaveStartDate = 'Invalid date format';
+        } else if(!endVal) {
+          errors.sickLeaveEndDate = 'End date is also required if start date is given';
+        }
+      }
+      if(endVal) {
+        if(!endDate) {
+          errors.sickLeaveEndDate = 'Invalid date format';
+        } else if(!startVal) {
+          errors.sickLeaveStartDate = 'Start date is also required if end date is given';
+        }
+      }
+      if(startDate && endDate && endDate<startDate) {
+        errors.sickLeaveEndDate = 'End date cannot come before start';
       }
     }
-    const startVal:unknown = values.sickLeaveStartDate;
-    const endVal:unknown = values.sickLeaveEndDate;
-    const startDate = typeof startVal==='string' ? Date.parse(startVal) : null;
-    const endDate = typeof endVal==='string' ? Date.parse(endVal) : null;
-    if(startVal) {
-      if(!startDate) {
-        errors.sickLeaveStartDate = 'Invalid date format';
-      } else if(!endVal) {
-        errors.sickLeaveEndDate = 'End date is also required if start date is given';
+    if(values.type===EntryType.Hospital) {
+      if(!values.dischargeDate) {
+        errors.dischargeDate = requiredError;
+      } else if(!isDate(values.dischargeDate)) {
+        errors.dischargeDate = 'Invalid date format';
       }
+      if(!values.dischargeCriteria) {
+        errors.dischargeCriteria = requiredError;
+      }      
+      
     }
-    if(endVal) {
-      if(!endDate) {
-        errors.sickLeaveEndDate = 'Invalid date format';
-      } else if(!startVal) {
-        errors.sickLeaveStartDate = 'Start date is also required if end date is given';
-      }
-    }
-    if(startDate && endDate && endDate<startDate) {
-      errors.sickLeaveEndDate = 'End date cannot come before start';
-    }
-
     return errors;
   };
 
@@ -91,7 +101,7 @@ const AddEntryModal = (props:Props) => {
         <Formik
           initialValues={{type:EntryType.HealthCheck,description:'',date:'',specialist:'',
             healthCheckRating:HealthCheckRating.Healthy,employerName:'',sickLeaveStartDate:'',
-            sickLeaveEndDate:'' }}
+            sickLeaveEndDate:'',dischargeDate:'',dischargeCriteria:'' }}
           onSubmit={props.onSubmit}
           validate={validate}>
           {({isValid,setFieldValue,setFieldTouched}) => {
@@ -161,7 +171,22 @@ const AddEntryModal = (props:Props) => {
                     </Grid>
                   </Container>                        
                 </ConditionalView>
-
+                <ConditionalView fieldName='type' fieldValue={EntryType.Hospital}>
+                  <Container>
+                    <Field
+                      label='Discharge date'
+                      placeholder={'dischargeDate'}
+                      name='dischargeDate'
+                      component={TextField}
+                    />
+                    <Field
+                      label='Discharge criteria'
+                      placeholder={'dischargeCriteria'}
+                      name='dischargeCriteria'
+                      component={TextField}
+                    />  
+                  </Container>                                  
+                </ConditionalView>
                 <Button type="submit" disabled={!isValid} color="green">Add</Button>
                 <Button type='button' onClick={props.onCancel} color="red">Cancel</Button>
 

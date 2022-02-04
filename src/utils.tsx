@@ -1,4 +1,4 @@
-import {EntryType,healthCheckEntryKeys,occupationalHealthcareEntryKeys,hospitalEntry} from './types';
+import {EntryType,healthCheckEntryKeys,occupationalHealthcareEntryKeys,hospitalEntryKeys} from './types';
 
 export const isString = (text:unknown):text is string => {
   return typeof text === 'string' || text instanceof String;
@@ -22,7 +22,7 @@ export const keepEntryKeys = (obj:{[key:string]:unknown}):{[key:string]:unknown}
   } else if(obj.type===EntryType.OccupationalHealthcare) {
     return keepKeys(obj,occupationalHealthcareEntryKeys);
   } else if(obj.type===EntryType.Hospital) {
-    return keepKeys(obj,hospitalEntry);
+    return keepKeys(obj,hospitalEntryKeys);
   }
   return obj;
 };

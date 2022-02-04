@@ -34,9 +34,14 @@ const PatientDetails = () => {
           startDate: vals.sickLeaveStartDate,
           endDate: vals.sickLeaveEndDate
         };
-        delete vals.sickLeaveStartDate;
-        delete vals.sickLeaveEndDate;
       }
+      if(vals.dischargeDate && vals.dischargeCriteria) {
+        vals.discharge = {
+          date: vals.dischargeDate,
+          criteria: vals.dischargeCriteria
+        };
+      }
+
       vals = keepEntryKeys(vals);
       if(!id) throw new Error('No patient ID specified');
       const {data:savedEntry} = await axios.post<Entry>(
